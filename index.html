@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>北京 → 呼和浩特 · 4天3晚草原人文路书</title>
+<script src="https://registry.npmmirror.com/echarts/5.6.0/files/dist/echarts.min.js"></script>
+<script src="https://registry.npmmirror.com/lucide/1.28.0/files/dist/umd/lucide.min.js"></script>
+<style>
+:root{
+  --bg:#FBFAF6; --tint:#F0F4EE; --surface:#FFFFFF;
+  --t1:#1E2A24; --t2:#5A6B60; --t3:#8B978E;
+  --grass:#2D8A4E; --grass-h:#1F6E3C; --sky:#1B74E4; --sand:#C9A24B;
+  --good:#0E7C3A; --warn:#B45309; --bad:#C62F1F;
+  --radius:16px; --btnr:9999px; --bstr:10%;
+  --ctrl:min(var(--radius),14px);
+  --border:color-mix(in srgb,var(--t1) var(--bstr),transparent);
+  --card:var(--surface);
+}
+*{margin:0;padding:0;box-sizing:border-box;corner-shape:squircle;}
+html{scroll-behavior:auto;}
+body{background:var(--bg);color:var(--t2);font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;line-height:1.6;}
+img{max-width:100%;display:block;}
+a{text-decoration:none;color:inherit;}
+section{max-width:1080px;margin:0 auto;padding:0 22px;}
+.btn{display:inline-block;background:var(--grass);color:#fff;border-radius:var(--btnr);padding:12px 26px;font-weight:700;text-align:center;}
+.btn:hover{background:var(--grass-h);color:#fff;}
+.btn.sec{background:transparent;color:var(--grass);border:1.5px solid var(--grass);}
+.btn.sec:hover{background:var(--grass);color:#fff;}
+.link{color:var(--grass);font-weight:600;}
+.link::after{content:"";display:inline-block;width:6px;height:6px;border-right:1.6px solid currentColor;border-top:1.6px solid currentColor;transform:rotate(45deg);margin-left:4px;}
+.pill{display:inline-block;color:color-mix(in srgb,var(--grass) 85%,var(--t1));background:color-mix(in srgb,var(--grass) 14%,var(--surface));border-radius:var(--btnr);padding:3px 12px;font-size:13px;font-weight:700;}
+.pill.rt{background:color-mix(in srgb,var(--sky) 16%,var(--surface));color:var(--sky);}
+.pill.ai{background:color-mix(in srgb,var(--t3) 16%,var(--surface));color:var(--t2);}
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;border-radius:8px;padding:2px 8px;}
+.badge.g{background:color-mix(in srgb,var(--good) 16%,var(--surface));color:var(--good);}
+.badge.b{background:color-mix(in srgb,var(--bad) 16%,var(--surface));color:var(--bad);}
+.badge.w{background:color-mix(in srgb,var(--warn) 16%,var(--surface));color:var(--warn);}
+.hdr{min-height:100svh;min-height:100vh;background:linear-gradient(180deg,rgba(20,28,24,.15),rgba(20,28,24,.78)),url("https://pixabay.com/get/g65f2deb69b347d62a470e6862b08cda5a30721a6b446b31befb04c6dee08f2ef7fb326b30c99b2e94002532edfee3290acd5ff740147c373cfa134d4dbf6f74b_1280.jpg") center/cover no-repeat;display:flex;align-items:flex-end;padding:0 22px 46px;color:#fff;position:relative;}
+.hdr .inner{max-width:1080px;margin:0 auto;width:100%;}
+.hdr .pill{background:rgba(255,255,255,.16);color:#fff;border:1px solid rgba(255,255,255,.35);}
+.hdr h1{font-size:clamp(30px,7vw,52px);line-height:1.15;margin:14px 0 10px;font-weight:800;max-width:900px;}
+.hdr .sub{font-size:clamp(15px,2.4vw,19px);max-width:760px;color:rgba(255,255,255,.92);}
+.hdr .params{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px;}
+.hdr .params span{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);padding:7px 15px;border-radius:999px;font-size:13.5px;}
+.stamp{position:absolute;top:16px;left:50%;transform:translateX(-50%);background:rgba(20,28,24,.55);backdrop-filter:blur(6px);padding:6px 16px;border-radius:999px;font-size:12.5px;color:#fff;white-space:nowrap;max-width:94%;overflow:hidden;text-overflow:ellipsis;}
+.navbar{position:sticky;top:0;z-index:50;background:rgba(251,250,246,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);}
+.nav-links{max-width:1080px;margin:0 auto;display:flex;overflow-x:auto;padding:0 14px;gap:2px;}
+.nav-links a{flex:0 0 auto;padding:13px 16px;font-weight:700;color:var(--t2);font-size:14.5px;border-bottom:3px solid transparent;white-space:nowrap;}
+.nav-links a.active{color:var(--grass);border-bottom-color:var(--grass);}
+.h-sec{padding:64px 0 12px;}
+.h-sec .eyebrow{color:var(--grass);font-weight:800;letter-spacing:2px;font-size:13px;}
+.h-sec h2{color:var(--t1);font-size:clamp(24px,4.5vw,34px);margin:6px 0 6px;font-weight:800;}
+.h-sec .lead{max-width:780px;color:var(--t2);margin-bottom:18px;}
+.grid2{display:grid;grid-template-columns:1fr;gap:18px;}
+.kpi{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+.kpi .cell{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;}
+.kpi .cell b{display:block;color:var(--t1);font-size:22px;font-weight:800;}
+.kpi .cell span{font-size:13px;color:var(--t3);}
+.mapbox{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-top:16px;}
+.mapbox .note{font-size:12px;color:var(--t3);text-align:center;padding:6px 0 2px;}
+.altnote{background:color-mix(in srgb,var(--sand) 12%,var(--surface));border:1px solid color-mix(in srgb,var(--sand) 30%,transparent);border-radius:var(--radius);padding:14px 16px;font-size:14px;color:var(--t1);margin-top:16px;}
+.day{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:20px;}
+.day .dhead{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px;flex-wrap:wrap;}
+.day .dnum{background:var(--grass);color:#fff;font-weight:800;border-radius:12px;padding:6px 14px;font-size:18px;flex:0 0 auto;}
+.day h3{color:var(--t1);font-size:20px;font-weight:800;flex:1;}
+.day .trans{font-size:12.5px;color:var(--grass);background:color-mix(in srgb,var(--grass) 12%,var(--surface));border-radius:8px;padding:3px 10px;font-weight:700;}
+.rows{display:flex;flex-direction:column;gap:10px;margin:10px 0;}
+.row{display:flex;gap:10px;align-items:flex-start;}
+.row .ic{flex:0 0 auto;width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;background:var(--tint);color:var(--grass);}
+.row b{color:var(--t1);font-weight:700;}
+.row .tt{color:var(--t2);}
+.timeline{border-left:2px solid color-mix(in srgb,var(--grass) 30%,transparent);margin:8px 0 4px 14px;padding-left:18px;display:flex;flex-direction:column;gap:12px;}
+.tl{position:relative;}
+.tl::before{content:"";position:absolute;left:-25px;top:5px;width:10px;height:10px;border-radius:50%;background:var(--grass);}
+.tl .tt{color:var(--grass);font-weight:800;font-size:13.5px;}
+.tl .t2{color:var(--t1);font-weight:700;}
+.tl .t3{color:var(--t2);font-size:14px;}
+.navbtn{display:block;width:100%;background:var(--grass);color:#fff;text-align:center;padding:13px;border-radius:12px;font-weight:800;font-size:15.5px;margin-top:14px;}
+.navbtn:hover{background:var(--grass-h);color:#fff;}
+.fold{border:1px solid var(--border);border-radius:12px;margin-top:12px;overflow:hidden;background:var(--surface);}
+.fold summary{list-style:none;display:flex;align-items:center;gap:10px;padding:13px 16px;cursor:pointer;font-weight:800;color:var(--t1);}
+.fold summary::-webkit-details-marker{display:none;}
+.fold summary .chev{margin-left:auto;transition:transform .25s;}
+.fold[open] summary .chev{transform:rotate(180deg);}
+.fold .fc{padding:0 16px 16px;font-size:14.5px;color:var(--t2);}
+.fold .fc b{color:var(--t1);}
+.fold .fc ul{margin:8px 0 0 18px;}
+.fold .fc li{margin:4px 0;}
+.photo{margin-top:14px;border-radius:12px;overflow:hidden;border:1px solid var(--border);}
+.photo img{width:100%;height:auto;}
+.photo .cap{font-size:12px;color:var(--t3);padding:6px 12px;background:var(--tint);}
+.drive{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-top:16px;}
+.drive h4{color:var(--t1);font-size:17px;font-weight:800;margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+.drive table{width:100%;border-collapse:collapse;font-size:14px;margin-top:8px;}
+.drive td,.drive th{border:1px solid var(--border);padding:8px 10px;text-align:left;color:var(--t2);}
+.drive th{background:var(--tint);color:var(--t1);font-weight:700;}
+.gall{display:flex;flex-direction:column;gap:14px;margin-top:8px;}
+.appendix{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-top:16px;font-size:14.5px;}
+.appendix h4{color:var(--t1);font-weight:800;font-size:16px;margin-bottom:8px;}
+.appendix ul{margin-left:18px;}
+.appendix li{margin:4px 0;}
+.foot{text-align:center;color:var(--t3);font-size:12.5px;padding:34px 22px 50px;}
+@media(min-width:760px){
+  .grid2{grid-template-columns:1fr 1fr;}
+  .kpi{grid-template-columns:repeat(4,1fr);}
+  .day .dm{display:grid;grid-template-columns:1.05fr .95fr;gap:18px;align-items:flex-start;}
+}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="stamp">本路书生成于 2026-11-15 · 易变信息基于该时刻实时数据</div>
+  <div class="inner">
+    <span class="pill">草原 · 人文 · 美食 · 深度</span>
+    <h1>北京 → 呼和浩特<br>4天3晚 草原与城市人文之旅</h1>
+    <p class="sub">青城寺庙古韵 + 草原纵马赏星 + 手把肉奶茶飘香。距离约 660km，高铁 3 小时直达，自驾 G6/G7 高速可选，一座"乳都+历史名城"，适合周末+请一天假的轻深度游。</p>
+    <div class="params">
+      <span>🚄 高铁约 2.5–3h</span>
+      <span>🚗 自驾约 660km / 8–9h</span>
+      <span>🗓 4天3晚</span>
+      <span>💴 人均约 2500–3500 元</span>
+      <span>🍂 最佳 6–9 月 / 冬看雪</span>
+    </div>
+  </div>
+</div>
+
+<div class="navbar">
+  <nav class="nav-links">
+    <a href="#overview" class="active">总览</a>
+    <a href="#transport">交通</a>
+    <a href="#day1">Day1</a>
+    <a href="#day2">Day2</a>
+    <a href="#day3">Day3</a>
+    <a href="#day4">Day4</a>
+    <a href="#appendix">附录</a>
+  </nav>
+</div>
+
+<section id="overview">
+  <div class="h-sec">
+    <div class="eyebrow">OVERVIEW</div>
+    <h2>行前决策</h2>
+    <p class="lead">一句话定位：这是一条「城市人文 + 草原风光」的轻深度路线 —— 大召寺藏传佛教古建、内蒙古博物院草原文明史、清真大寺伊斯兰风情，再到草原蒙古包骑马看星星。整体难度低，适合首次访内蒙古、带老人孩子的家庭或好友结伴。</p>
+  </div>
+  <div class="kpi">
+    <div class="cell"><b>660 km</b><span>自驾单程（高铁约2.5–3h）</span></div>
+    <div class="cell"><b>4天3晚</b><span>市区3晚酒店</span></div>
+    <div class="cell"><b>约1100m</b><span>市区海拔，草原约1600–2000m（待确认）</span></div>
+    <div class="cell"><b>2500–3500元</b><span>人均预算（含往返交通）</span></div>
+  </div>
+
+  <div class="mapbox">
+    <div id="routeMap" style="width:100%;height:420px"></div>
+    <div class="note">示意图，非真实轨迹与比例（ECharts 节点连线示意）</div>
+  </div>
+
+  <div class="altnote">
+    ⚠️ <b>高原/海拔提示</b>：呼和浩特市区海拔约 1050m，希拉穆仁草原约 1600–2000m（<b>待确认</b>，请以官方/导航实测为准）。绝大多数人无高反；草原昼夜温差大，白天短袖夜里需抓绒+防风外套，备好防晒和补水。
+  </div>
+
+  <div class="appendix">
+    <h4>🎒 装备与准备清单</h4>
+    <ul>
+      <li><b>证件</b>：身份证、自驾带驾照 + 行驶证；草原项目（骑马/篝火）无需特殊门票但需预约。</li>
+      <li><b>衣物</b>：白天防晒衣、夜间抓绒/薄羽绒（草原夜间 10–15℃），遮阳帽、墨镜。</li>
+      <li><b>防晒补水</b>：高原紫外线强，SPF50+ 防晒霜、润唇膏、保温杯。</li>
+      <li><b>门票预约</b>：内蒙古博物院免费但需小程序预约；大召寺门票现场/携程可购；草原项目建议提前一天联系民宿预订骑马/篝火。</li>
+      <li><b>自驾备品</b>：ETC、备胎、现金零钱、车载充电。</li>
+    </ul>
+  </div>
+</section>
+
+<section id="transport">
+  <div class="h-sec">
+    <div class="eyebrow">TRANSPORT</div>
+    <h2>往返交通（高铁 + 自驾）</h2>
+    <p class="lead">呼和浩特距北京约 660km（< 1000km），本路书同时给出高铁乘车方案与 G6/G7 自驾路线，任选其一。班次/票价以 12306 实时为准。</p>
+  </div>
+
+  <div class="drive">
+    <h4>🚄 高铁方案（推荐，约 2.5–3h）</h4>
+    <table>
+      <tr><th>车次（示例）</th><th>出发</th><th>到达</th><th>历时</th><th>二等座参考</th></tr>
+      <tr><td>G2487 等（清河站）</td><td>09:00</td><td>11:50 呼和浩特东</td><td>约2h50m</td><td>约 200–230 元</td></tr>
+      <tr><td>G2455 等（北京北站）</td><td>09:15</td><td>12:05 呼和浩特东</td><td>约2h50m</td><td>约 200–230 元</td></tr>
+    </table>
+    <p style="font-size:13px;color:var(--t3);margin-top:6px;"><span class="pill rt">🟢 实时</span> 数据来源：12306 中国铁路（抓取时间 2026-11-15）。班次随时刻表调整，出行前请复核。</p>
+    <a class="navbtn" href="https://www.12306.cn/index/" target="_blank">前往 12306 查询余票</a>
+  </div>
+
+  <div class="drive">
+    <h4>🚗 自驾方案（G6 京藏高速 往返）</h4>
+    <table>
+      <tr><th>项</th><th>估算</th></tr>
+      <tr><td>路线</td><td>北京 → 京藏高速 G6（经张家口）→ 呼和浩特，单程约 660km</td></tr>
+      <tr><td>耗时</td><td>约 8–9 小时（含 2 次服务区休整），高速全程</td></tr>
+      <tr><td>过路费</td><td>单程约 200–250 元（ETC 略有优惠）</td></tr>
+      <tr><td>油费</td><td>按 8L/100km、7.5 元/L 估算：单程约 396 元；往返约 790 元（车型不同差异大）</td></tr>
+      <tr><td>充电（电车）</td><td>G6 沿线服务区均有充电桩，中途可补 1–2 次</td></tr>
+    </table>
+    <p style="font-size:13px;color:var(--t3);margin-top:6px;"><span class="pill ai">⚪ AI 估算</span> 油价/过路费为模型估算，请以出发当天实际为准。</p>
+    <a class="navbtn" href="https://www.amap.com/dir?from=北京&to=呼和浩特&type=car" target="_blank">高德查看北京—呼和浩特驾车路线</a>
+  </div>
+</section>
+
+<!-- 每段小图数据 -->
+<div id="dayMap1" style="display:none"></div>
+
+<section id="day1">
+  <div class="h-sec"><div class="eyebrow">DAY 1</div><h2>北京 → 呼和浩特 · 抵达与青城夜色</h2></div>
+  <div class="day">
+    <div class="dhead"><span class="dnum">D1</span><h3>高铁抵呼 · 大召寺 + 塞上老街</h3><span class="trans">🚄 高铁</span></div>
+    <div class="dm">
+      <div>
+        <div class="timeline">
+          <div class="tl"><span class="tt">09:00</span><div class="t2">清河/北京北 乘高铁出发</div><div class="t3">09:00 车次，约 2h50m，约 200–230 元。🟢 实时：12306（2026-11-15）</div></div>
+          <div class="tl"><span class="tt">11:50</span><div class="t2">抵达呼和浩特东站，打车/地铁至酒店（约 25–35 元）</div></div>
+          <div class="tl"><span class="tt">13:00</span><div class="t2">入住酒店放行李，午餐</div><div class="t3">酒店：<b>和颐至尚酒店（呼和浩特中山西路店）</b> 约 320–380 元/晚；备选：如家精选·新华广场店 ¥280–360。🟢 实时：携程/美团房价（2026-11-15）</div></div>
+          <div class="tl"><span class="tt">15:00</span><div class="t2">大召寺（银佛寺）+ 塞上老街</div></div>
+          <div class="tl"><span class="tt">18:30</span><div class="t2">塞上老街夜市 + 晚餐</div></div>
+        </div>
+        <div class="rows">
+          <div class="row"><div class="ic" data-lucide="map"></div><div><b>路况/市内</b>：呼和浩特市区道路平缓，地铁1/2号线覆盖，打车起步约 8 元，核心景点步行可达，无拥堵压力。</div></div>
+          <div class="row"><div class="ic" data-lucide="utensils"></div><div><b>今日美食</b>：午餐「<a class="link" href="https://uri.amap.com/search?keyword=老绥元烧麦&city=呼和浩特" target="_blank">老绥元烧麦</a>」羊肉大葱烧麦+砖茶，人均约 40–60 元；晚餐塞上老街「<a class="link" href="https://uri.amap.com/search?keyword=格日勒阿妈奶茶馆&city=呼和浩特" target="_blank">格日勒阿妈奶茶馆</a>」手扒羊肉+锅茶，人均约 60–90 元。</div></div>
+          <div class="row"><div class="ic" data-lucide="alert-triangle"></div><div><b>坑点</b>：塞上老街夜市人流量大，看管好随身物品；大召寺属宗教场所请着装得体。</div></div>
+          <div class="row"><div class="ic" data-lucide="refresh-cw"></div><div><b>Plan B</b>：若高铁晚点，市内行程压缩至大召寺夜景，老街次日早间补逛；或改乘稍晚班次（每小时有多班）。</div></div>
+        </div>
+        <details class="fold"><summary>展开详细攻略 <i class="chev" data-lucide="chevron-down"></i></summary>
+          <div class="fc">
+            <b>大召寺</b>（又名银佛寺，藏传佛教格鲁派）——呼和浩特最早兴建的喇嘛教寺院，供奉 3 米高的银佛。看点：山门殿、天王殿、大雄宝殿的银佛与鎏金、清代康熙御碑。门票约 35–45 元，开放 08:30–17:30。
+            <ul><li>📷 拍照打卡：大雄宝殿前银佛、殿顶鎏金铜瓦、红墙转角</li><li>🍜 周边美食：烧麦、焙子、格日勒阿妈奶茶</li><li>🗺 动线：大召 → 塞上老街（紧邻，步行 5 分钟）→ 席力图召（可选）</li></ul>
+            <b>塞上老街</b>：明清老街，青砖灰瓦，汇聚内蒙古特产、工艺品与小吃。夜景灯光很美。
+            <ul><li>📷 打卡：老街牌坊、青砖街巷、蒙古族手工艺品店</li><li>🍜 美食：奶皮卷、焙子、手扒羊肉、锅茶</li></ul>
+          </div>
+        </details>
+        <div class="mapbox"><div id="dayMap1" style="width:100%;height:260px"></div><div class="note">本段示意，非真实轨迹与比例</div></div>
+        <a class="navbtn" href="https://uri.amap.com/search?keyword=呼和浩特大召寺&city=呼和浩特" target="_blank">一键导航 · 大召寺</a>
+      </div>
+      <div>
+        <div class="photo"><img src="https://p3-volcsearch-sign.byteimg.com/tos-cn-i-xstd03g9pf/17a4b7969cfc40ee92fdfdaad3eba170~tplv-obj.jpeg" alt="大召寺" loading="lazy"><div class="cap">大召寺 · <small><a href="http://you.ctrip.com/sight/huhehaote156/8950-dianping155711855.html" target="_blank">携程攻略</a></small></div></div>
+        <div class="appendix" style="margin-top:12px;"><h4>🛏️ 住宿建议</h4>首晚住市区中心（中山西路/新华广场一带），地铁+步行都方便。价位 300–400 元/晚为主推，备选 280–360 元。旺季（暑期/节假日）建议提前 2 周预订。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="day2">
+  <div class="h-sec"><div class="eyebrow">DAY 2</div><h2>城市人文一日 · 博物院与清真寺</h2></div>
+  <div class="day">
+    <div class="dhead"><span class="dnum">D2</span><h3>内蒙古博物院 + 清真大寺 + 伊斯兰风情街</h3><span class="trans">🚕 市内</span></div>
+    <div class="dm">
+      <div>
+        <div class="timeline">
+          <div class="tl"><span class="tt">09:30</span><div class="t2">内蒙古博物院（免费，需小程序预约）</div></div>
+          <div class="tl"><span class="tt">12:30</span><div class="t2">午餐后前往清真大寺 + 伊斯兰风情街</div></div>
+          <div class="tl"><span class="tt">16:00</span><div class="t2">公主府 / 五塔寺（可选）</div></div>
+          <div class="tl"><span class="tt">19:00</span><div class="t2">晚餐，可逛万达/摩尔城商圈</div></div>
+        </div>
+        <div class="rows">
+          <div class="row"><div class="ic" data-lucide="map"></div><div><b>路况/市内</b>：博物馆在新华东街，清真大寺在旧城通道南街，打车约 20 分钟；全天地铁+打车即可。</div></div>
+          <div class="row"><div class="ic" data-lucide="utensils"></div><div><b>今日美食</b>：午餐清真大寺旁「<a class="link" href="https://uri.amap.com/search?keyword=呼和浩特清真小吃&city=呼和浩特" target="_blank">清真羊肉泡馍/烩面</a>」，人均约 30–50 元；晚餐「<a class="link" href="https://uri.amap.com/search?keyword=德顺源烧麦&city=呼和浩特" target="_blank">德顺源烧麦</a>」+「<a class="link" href="https://uri.amap.com/search?keyword=呼和浩特酸奶&city=呼和浩特" target="_blank">老酸奶</a>」，人均约 50–70 元。</div></div>
+          <div class="row"><div class="ic" data-lucide="alert-triangle"></div><div><b>坑点</b>：博物院周一闭馆（法定节假日除外），出发前确认；清真大寺参观请尊重宗教礼仪、着装端庄。</div></div>
+          <div class="row"><div class="ic" data-lucide="refresh-cw"></div><div><b>Plan B</b>：若博物院预约满/闭馆，改去「昭君博物院」（青冢）或「内蒙古美术馆」；雨天清真大寺+室内博物馆不受影响。</div></div>
+        </div>
+        <details class="fold"><summary>展开详细攻略 <i class="chev" data-lucide="chevron-down"></i></summary>
+          <div class="fc">
+            <b>内蒙古博物院</b>（国家一级博物馆）——以"草原文化"为主线，14 个展厅浓缩中国北方生态变迁史与草原文明史，收藏 15 万余件，含古生物化石（巨大恐龙）、大辽契丹文物、蒙古族民俗文物。免费开放 09:00–17:00（16:00 停止入馆），周一闭馆。
+            <ul><li>📷 打卡：巨型恐龙化石厅、"交融的魅力"民族服饰展、草原生态场景</li><li>🗺 动线：B1 远古世界 → 一层草原文明 → 二层民族风情 → 顶层临时展，约 2.5–3h</li></ul>
+            <b>清真大寺</b>：始建于清康熙年间，呼和浩特最古老清真寺之一，融合中西建筑风格的穹顶与宣礼塔，极具伊斯兰风情。步行 5 分钟即到伊斯兰风情街（商业街，适合拍照购特产）。
+            <ul><li>📷 打卡：穹顶与月牙标志、宣礼塔剪影、风情街彩色建筑</li></ul>
+          </div>
+        </details>
+        <div class="mapbox"><div id="dayMap2" style="width:100%;height:260px"></div><div class="note">本段示意，非真实轨迹与比例</div></div>
+        <a class="navbtn" href="https://uri.amap.com/search?keyword=内蒙古博物院&city=呼和浩特" target="_blank">一键导航 · 内蒙古博物院</a>
+      </div>
+      <div>
+        <div class="photo"><img src="https://p3-volcsearch-sign.byteimg.com/tos-cn-i-xstd03g9pf/4fbc0400d5914270a7dce31ee8140eae~tplv-obj.jpeg" alt="内蒙古博物院" loading="lazy"><div class="cap">内蒙古博物院 · <small><a href="http://you.ctrip.com/sight/erlianhaote2976/8960-dianping-p2.html" target="_blank">携程攻略</a></small></div></div>
+        <div class="photo"><img src="https://p11-volcsearch-sign.byteimg.com/tos-cn-i-xstd03g9pf/f25ced54d1074850a3184c978e89a4a9~tplv-obj.jpeg" alt="呼和浩特清真大寺" loading="lazy"><div class="cap">呼和浩特清真大寺 · <small><a href="https://m.mafengwo.cn/photo/11415/scenery_3177826/27515227.html" target="_blank">马蜂窝</a></small></div></div>
+        <div class="appendix" style="margin-top:12px;"><h4>🛏️ 住宿建议</h4>续住 D1 酒店免搬行李；若换，仍选新华广场地铁沿线 300–400 元档（如建国铂萃·呼和浩特店 ¥329–389）。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="day3">
+  <div class="h-sec"><div class="eyebrow">DAY 3</div><h2>草原一日 · 纵马与星空</h2></div>
+  <div class="day">
+    <div class="dhead"><span class="dnum">D3</span><h3>希拉穆仁草原 · 蒙古包 + 骑马 + 篝火</h3><span class="trans">🚗 包车/自驾</span></div>
+    <div class="dm">
+      <div>
+        <div class="timeline">
+          <div class="tl"><span class="tt">09:30</span><div class="t2">市区出发，包车/自驾前往希拉穆仁草原（约 100km，1.5–2h）</div></div>
+          <div class="tl"><span class="tt">11:30</span><div class="t2">抵达草原接待点，午餐（手把羊肉/奶茶）</div></div>
+          <div class="tl"><span class="tt">14:00</span><div class="t2">骑马 / 草原漫步 / 牧民家访</div></div>
+          <div class="tl"><span class="tt">18:30</span><div class="t2">晚餐烤羊腿 + 篝火晚会 + 看星星（草原夜）</div></div>
+        </div>
+        <div class="rows">
+          <div class="row"><div class="ic" data-lucide="map"></div><div><b>路况</b>：全程国道+草原土路（部分非铺装），坑洼段减速；包车往返约 400–600 元/车，或自驾（油费+过路费约 150 元）。</div></div>
+          <div class="row"><div class="ic" data-lucide="utensils"></div><div><b>今日美食</b>：草原接待点手把肉/烤羊排/奶茶套餐，人均约 100–150 元；晚餐烤全羊/烤羊腿（视人数），人均约 120–180 元。</div></div>
+          <div class="row"><div class="ic" data-lucide="alert-triangle"></div><div><b>坑点</b>：草原信号部分地区弱，提前下载离线地图；骑马请选正规接待点、听从教练，戴头盔；草原无路灯，夜间驾车小心牛羊横穿。</div></div>
+          <div class="row"><div class="ic" data-lucide="refresh-cw"></div><div><b>Plan B</b>：若天气不佳（大风/雨），改为「呼和浩特 → 黄花沟/辉腾锡勒」一日也可当天往返；或退回市区逛青城公园。</div></div>
+        </div>
+        <details class="fold"><summary>展开详细攻略 <i class="chev" data-lucide="chevron-down"></i></summary>
+          <div class="fc">
+            <b>希拉穆仁草原</b>：呼和浩特以北最著名的草原旅游区之一，海拔约 1600–2000m（待确认）。7–8 月草绿、牛羊成群，可体验蒙古包住宿、骑马、射箭、牧民家访、篝火晚会。距离市区约 100km。
+            <ul><li>📷 打卡：草原与马群剪影、蒙古包炊烟、傍晚日落、夜间星空银河</li><li>🗺 动线：午后骑马 → 牧民家访喝奶茶 → 傍晚看日落 → 晚上篝火+星空</li></ul>
+            <b>提示</b>：草原昼夜温差极大（白天 25℃+ / 夜里 10℃以下），务必带抓绒或薄羽绒；夜间看星星需避开云层，出发前查天气。
+          </div>
+        </details>
+        <div class="mapbox"><div id="dayMap3" style="width:100%;height:260px"></div><div class="note">本段示意，非真实轨迹与比例</div></div>
+        <a class="navbtn" href="https://uri.amap.com/search?keyword=希拉穆仁草原&city=呼和浩特" target="_blank">一键导航 · 希拉穆仁草原</a>
+      </div>
+      <div>
+        <div class="photo"><img src="https://pixabay.com/get/g627cb64edd1b1fff72d4a7e42ad3ae17e05ecf0965a82916f4d320686568598d772d474f55185f78561122bbddd864b37819be1feee87be6a69e2e3f254c6dae_1280.jpg" alt="希拉穆仁草原蒙古包" loading="lazy"><div class="cap">草原蒙古包 · <small><a href="https://pixabay.com/photos/mongolian-yurt-nature-mountain-10356807/" target="_blank">Image by r-q on Pixabay</a></small></div></div>
+        <div class="appendix" style="margin-top:12px;"><h4>🛏️ 住宿建议</h4>草原蒙古包 300–400 元/晚（含早，旺季涨到 400–500 需提前订）；若对住宿要求高，可当天往返市区，回住 D1 酒店（包车约 1.5–2h）。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="day4">
+  <div class="h-sec"><div class="eyebrow">DAY 4</div><h2>返程日 · 可选半日 + 归京</h2></div>
+  <div class="day">
+    <div class="dhead"><span class="dnum">D4</span><h3>市区补漏 / 返程</h3><span class="trans">🚄 高铁 / 🚗 自驾</span></div>
+    <div class="dm">
+      <div>
+        <div class="timeline">
+          <div class="tl"><span class="tt">09:30</span><div class="t2">市区可选：公主府 / 五塔寺 / 内蒙古美术馆（补漏项）</div></div>
+          <div class="tl"><span class="tt">12:00</span><div class="t2">午餐后退房，前往呼和浩特东站</div></div>
+          <div class="tl"><span class="tt">13:30</span><div class="t2">乘高铁返京（约 2h50m），或自驾返程（约 8–9h，建议早出发）</div></div>
+        </div>
+        <div class="rows">
+          <div class="row"><div class="ic" data-lucide="utensils"></div><div><b>今日美食</b>：返程前午餐「<a class="link" href="https://uri.amap.com/search?keyword=呼和浩特稍麦&city=呼和浩特" target="_blank">羊肉稍麦+羊杂汤</a>」，人均约 35–50 元；可买奶制品、牛肉干作伴手礼。</div></div>
+          <div class="row"><div class="ic" data-lucide="refresh-cw"></div><div><b>Plan B</b>：若想多留半日，可改乘下午 15:00 后班次；自驾返程建议避开 18:00 前出城高峰。</div></div>
+        </div>
+        <div class="mapbox"><div id="dayMap4" style="width:100%;height:260px"></div><div class="note">本段示意，非真实轨迹与比例</div></div>
+        <a class="navbtn" href="https://uri.amap.com/search?keyword=呼和浩特东站&city=呼和浩特" target="_blank">一键导航 · 呼和浩特东站</a>
+      </div>
+      <div>
+        <div class="appendix" style="margin-top:12px;"><h4>🛏️ 住宿建议</h4>返程日无住宿安排；如需续住多玩一天，建议延住 D1/D2 酒店（300–400 元档）。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="appendix">
+  <div class="h-sec"><div class="eyebrow">APPENDIX</div><h2>附录 · 应急与兜底</h2></div>
+  <div class="appendix">
+    <h4>🚨 应急信息</h4>
+    <ul>
+      <li>紧急/报警：110 · 医疗急救：120 · 交通事故：122 · 高速救援：12122</li>
+      <li>呼和浩特医院：内蒙古医科大学附属医院（新华大街）· 内蒙古人民医院（中山东路），均三甲。</li>
+      <li>草原项目安全：骑马/篝火听从现场人员指挥；过敏/哮喘史备药。</li>
+    </ul>
+  </div>
+  <div class="appendix">
+    <h4>🧭 全局兜底 Plan B</h4>
+    <ul>
+      <li>极端天气（沙尘/暴雨）：草原段取消，改为市内博物馆+美食 2 日深度游。</li>
+      <li>行程缩短为 3 天：D3 草原改半天（早去午返）或取消，D4 提前返程。</li>
+      <li>旺季订不到房：改住地铁沿线经济型（250–300 元）或呼和浩特西/新城片区。</li>
+    </ul>
+  </div>
+  <div class="appendix">
+    <h4>💰 花费预估（人均，2026-11-15 估算）</h4>
+    <ul>
+      <li>高铁往返：约 400–460 元；自驾往返（油费+过路费）：约 1000–1200 元/车（拼 2–4 人更低）。</li>
+      <li>酒店 3 晚：约 900–1200 元（300–400 元/晚）。</li>
+      <li>餐饮：约 600–800 元。门票/项目：大召寺 40 + 草原骑马等项目 200–400。合计约 2500–3500 元。</li>
+    </ul>
+  </div>
+  <div class="foot">本路书生成于 2026-11-15 · 易变信息来源：12306（高铁班次）、携程/美团（房价）、高德（路线）、中央气象台（天气）。<br>价格与班次为估算/快照，出行前请复核官方渠道。示意图仅表达线路拓扑，非真实比例与轨迹。</div>
+</section>
+
+<script>
+var placeNames = ['北京(起)','张家口','乌兰察布','呼和浩特(终)'];
+var AMP=0.10, PERIOD=10;
+var nodeData = placeNames.map(function(name,i,arr){
+  var n=arr.length,t=n>1?i/(n-1):0.5;
+  var x=+(0.05+t*0.90).toFixed(4);
+  var phase=(i%PERIOD)/PERIOD;
+  var tri=2*Math.abs(2*(phase-Math.round(phase)))-1;
+  var y=+(0.5+AMP*tri).toFixed(4);
+  return {name:name,x:x,y:y,symbolSize:(i===0||i===n-1)?24:16};
+});
+var linkData=[
+  {source:'北京(起)',target:'张家口',value:'180km'},
+  {source:'张家口',target:'乌兰察布',value:'250km'},
+  {source:'乌兰察布',target:'呼和浩特(终)',value:'230km'}
+];
+var routeChart=echarts.init(document.getElementById('routeMap'));
+routeChart.setOption({series:[{type:'graph',layout:'none',data:nodeData,links:linkData,roam:true,scaleLimit:{min:1,max:8},symbolSize:20,label:{show:true,position:'bottom',formatter:'{b}'},edgeLabel:{show:true,formatter:'{c}'},lineStyle:{color:'source',curveness:0.15,width:2},itemStyle:{color:function(p){return p.data.name.indexOf('北京')!==-1||p.data.name.indexOf('呼和浩特')!==-1?'#C9A24B':'#2D8A4E';},borderColor:'#fff',borderWidth:2}}]});
+window.addEventListener('resize',function(){routeChart.resize();});
+
+var dayRoutesData=[
+  {nodes:['呼和浩特东站','酒店','大召寺','塞上老街'],links:[{source:'呼和浩特东站',target:'酒店',value:'8km'},{source:'酒店',target:'大召寺',value:'5km'},{source:'大召寺',target:'塞上老街',value:'0.5km'}]},
+  {nodes:['酒店','内蒙古博物院','清真大寺','伊斯兰风情街'],links:[{source:'酒店',target:'内蒙古博物院',value:'10km'},{source:'内蒙古博物院',target:'清真大寺',value:'8km'},{source:'清真大寺',target:'伊斯兰风情街',value:'1km'}]},
+  {nodes:['市区','希拉穆仁草原','草原接待点'],links:[{source:'市区',target:'希拉穆仁草原',value:'100km'},{source:'希拉穆仁草原',target:'草原接待点',value:'2km'}]},
+  {nodes:['酒店','公主府','呼和浩特东站','北京(返)'],links:[{source:'酒店',target:'公主府',value:'3km'},{source:'公主府',target:'呼和浩特东站',value:'12km'},{source:'呼和浩特东站',target:'北京(返)',value:'高铁'}]}
+];
+dayRoutesData.forEach(function(route,idx){
+  var el=document.getElementById('dayMap'+(idx+1));
+  if(!el)return;
+  var boxW=el.clientWidth,boxH=el.clientHeight;
+  var marginX=30,marginY=40;
+  var nodes=route.nodes.map(function(name,i,arr){
+    var n=arr.length,t=n>1?i/(n-1):0.5;
+    var xR=+(0.05+t*0.90).toFixed(4);
+    var phase=(i%PERIOD)/PERIOD;
+    var tri=2*Math.abs(2*(phase-Math.round(phase)))-1;
+    var yR=+(0.5+AMP*tri).toFixed(4);
+    return {name:name,x:marginX+xR*(boxW-marginX*2),y:marginY+yR*(boxH-marginY*2)};
+  });
+  var ch=echarts.init(el);
+  ch.setOption({series:[{type:'graph',layout:'none',data:nodes,links:route.links,roam:true,scaleLimit:{min:1,max:8},symbolSize:14,label:{show:true,position:'bottom',formatter:'{b}'},edgeLabel:{show:true,formatter:'{c}'},lineStyle:{color:'source',curveness:0.15,width:2},itemStyle:{color:'#2D8A4E',borderColor:'#fff',borderWidth:2}}]});
+  window.addEventListener('resize',function(){ch.resize();});
+});
+
+var navLinks=document.querySelectorAll('.nav-links a');
+var sections=[];
+for(var i=0;i<navLinks.length;i++){var h=navLinks[i].getAttribute('href');if(h)sections.push(document.getElementById(h.replace('#','')));}
+function updateNav(){
+  var navH=document.querySelector('.nav-links').closest('nav,header').offsetHeight;
+  var vh=window.innerHeight,current=0,bestVisible=-1;
+  for(var i=0;i<sections.length;i++){
+    if(!sections[i])continue;
+    var r=sections[i].getBoundingClientRect();
+    var vt=Math.max(r.top,navH),vb=Math.min(r.bottom,vh);
+    var v=Math.max(0,vb-vt);
+    if(v>bestVisible){bestVisible=v;current=i;}
+  }
+  for(var j=0;j<navLinks.length;j++){navLinks[j].classList.toggle('active',j===current);}
+}
+window.addEventListener('scroll',updateNav,{passive:true});
+window.addEventListener('resize',updateNav,{passive:true});
+updateNav();
+
+if(window.lucide){lucide.createIcons();}
+</script>
+
+<script>(function(){
+var d=document,b=d.body;if(!b)return;
+var old=b.querySelectorAll('[data-aigc-mark],#__xas_aigc_watermark__');
+for(var k=0;k<old.length;k++)old[k].parentNode&&old[k].parentNode.removeChild(old[k]);
+var f=d.createElement("div");
+f.id="__xas_aigc_watermark__";
+f.setAttribute("data-aigc-mark","true");
+f.style.cssText="position:fixed;bottom:8px;right:12px;z-index:2147483647;font-size:11px;padding:3px 7px;font-family:system-ui,sans-serif;pointer-events:none;color:rgba(30,30,30,0.6);background:rgba(255,255,255,0.4);border:0.5px solid rgba(0,0,0,0.08);border-radius:4px;line-height:1.4;backdrop-filter:blur(8px);";
+var paths=["M14.0072 26.6377C14.2318 25.9475 13.3696 25.4389 12.8659 25.9611C9.56694 29.3941 6.9736 33.4696 5.35587 37.9788C-0.86998 55.1279 7.72006 74.1728 24.7867 80.6891C33.1499 83.8815 41.0252 82.7894 44.7212 81.8812C54.0056 79.6016 63.1537 72.4609 66.7114 63.4447C67.1039 62.4525 66.6252 61.3286 65.6404 60.9222C63.78 60.1548 61.9263 59.3896 60.3721 58.7471C59.46 58.3702 58.4117 58.7402 57.9398 59.6076C56.4287 62.3753 54.8496 65.0568 52.4945 67.2274C46.0349 73.5893 36.1675 75.8621 27.5956 72.9036C14.6833 68.6487 7.76998 54.5307 12.124 41.7683C12.3668 41.0553 12.4916 40.3038 12.4621 39.55C12.242 33.8125 12.8228 30.2955 14.0072 26.6377Z","M73.6785 14.313C74.3682 14.5378 74.8765 13.675 74.3546 13.171C70.9241 9.86968 66.8514 7.27451 62.3454 5.65564C45.2084 -0.574603 26.1769 8.0215 19.6651 25.1002C16.4751 33.4692 17.5664 41.3501 18.474 45.0488C20.7519 54.3396 27.8876 63.4943 36.8974 67.0544C37.8889 67.4472 39.012 66.9681 39.4182 65.9827C40.185 64.1209 40.9497 62.2659 41.5918 60.7107C41.9684 59.7979 41.5986 58.7489 40.7318 58.2767C37.9661 56.7645 35.2865 55.1843 33.1174 52.8275C26.76 46.3634 24.4888 36.489 27.4452 27.9111C31.6971 14.9897 45.8051 8.07145 58.5586 12.4285C59.271 12.6715 60.022 12.7964 60.7753 12.7668C66.5088 12.5466 70.0233 13.1278 73.6785 14.313Z","M85.9922 73.9549C85.7676 74.6451 86.6298 75.1537 87.1335 74.6315C90.4324 71.1985 93.0258 67.123 94.6435 62.6138C100.869 45.4647 92.2793 26.4198 75.2127 19.9035C66.8495 16.7111 58.9742 17.8033 55.2782 18.7114C45.9938 20.991 36.8456 28.1317 33.288 37.1479C32.8955 38.1401 33.3742 39.264 34.3589 39.6704C36.2194 40.4378 38.0731 41.203 39.6273 41.8455C40.5394 42.2224 41.5876 41.8524 42.0596 40.985C43.5706 38.2173 45.1498 35.5358 47.5049 33.3652C53.9645 27.0033 63.8319 24.7305 72.4038 27.689C85.3161 31.9439 92.2294 46.0619 87.8754 58.8243C87.6326 59.5373 87.5078 60.2888 87.5373 61.0426C87.7574 66.7801 87.1766 70.2971 85.9922 73.9549Z","M26.2674 86.2849C25.5777 86.0601 25.0694 86.9229 25.5913 87.4269C29.0219 90.7282 33.0945 93.3234 37.6028 94.9423C54.7398 101.173 73.7713 92.5764 80.2831 75.4977C83.4731 67.1287 82.3818 59.2478 81.4742 55.5491C79.1963 46.2583 72.0606 37.1036 63.0508 33.5435C62.0593 33.1507 60.9362 33.6298 60.53 34.6152C59.7632 36.477 58.9985 38.3297 58.3564 39.885C57.9798 40.7977 58.3496 41.8467 59.2163 42.3212C61.9821 43.8334 64.6617 45.4114 66.8285 47.7704C73.1859 54.2345 75.4571 64.1089 72.5007 72.6869C68.2488 85.6082 54.1408 92.5265 41.3874 88.1694C40.6749 87.9264 39.9239 87.8015 39.1706 87.8311C33.4371 88.0513 29.9226 87.4701 26.2674 86.2826V86.2849Z"];
+b.appendChild(f);
+var svg='<svg width="14" height="14" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:inline;vertical-align:-2px;margin:0 4px">';
+for(var i=0;i<paths.length;i++)svg+='<path d="'+paths[i]+'" fill="rgba(30,30,30,0.5)"/>';
+svg+="</svg>";
+f.innerHTML="本页面由"+svg+"超级小爱AI生成";
+})();</script>
+</body>
+</html>
